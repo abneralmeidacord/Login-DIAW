@@ -10,9 +10,6 @@
 
 <body>
 <div class="login-container">
-    <div class="login-image-logo-container">
-        <img th:src="@{/images/logo.png}" alt="Logo projeto">
-    </div>
     <div class="login-form">
         <form th:action="@{/login}" method="post" class="login-form">
             <h4 class="login-title">Login</h4>
@@ -27,6 +24,9 @@
                 <a href="/recoverpassword">Esqueceu sua senha?</a>
             </p>
         </form>
+    </div>
+    <div class="login-image-logo-container">
+        <img th:src="@{/images/logo.png}" alt="Logo projeto">
     </div>
 </div>
 </body>
