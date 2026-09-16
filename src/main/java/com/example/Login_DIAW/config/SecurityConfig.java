@@ -28,7 +28,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/login/**").permitAll() // Permitir acesso a POST na URL de login
                         .requestMatchers(HttpMethod.GET, "/css/**").permitAll() // Permitir acesso a arquivos CSS
                         .requestMatchers(HttpMethod.GET, "/js/**").permitAll() // Permitir acesso a arquivos JavaScript
-                        .requestMatchers(HttpMethod.GET, "/images/**").permitAll() // Permitir acesso a arquivos de imagem
+                        .requestMatchers(HttpMethod.GET, "/imgs/**").permitAll() // Permitir acesso a arquivos de imagem
                         .requestMatchers(HttpMethod.GET, "/register").permitAll() // Permitir acesso à página de registro
                         .requestMatchers(HttpMethod.POST, "/register").permitAll() // Permitir envio do formulário de registro
                         .requestMatchers(HttpMethod.GET, "/recoverpassword").permitAll() // Permitir acesso à página de recuperação de senha
