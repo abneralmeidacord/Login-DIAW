@@ -1,21 +1,20 @@
 package com.example.Login_DIAW.service;
 
-import com.example.Login_DIAW.exception.SendEmailException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.example.Login_DIAW.exception.SendEmailException;
+
 @Service
 public class SendEmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
-    private String fromEmail;
+    public SendEmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public void sendEmail(String to, String subject, String body) {
         try {
@@ -23,7 +22,7 @@ public class SendEmailService {
             message.setTo(to);
             message.setSubject(subject);
             message.setText(body);
-            message.setFrom(fromEmail);
+            message.setFrom("abnersolk@gmail.com");
 
             mailSender.send(message);
         } catch (MailException e) {
