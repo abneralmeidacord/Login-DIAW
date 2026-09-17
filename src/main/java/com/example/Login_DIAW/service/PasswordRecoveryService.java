@@ -1,16 +1,16 @@
 package com.example.Login_DIAW.service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class PasswordRecoveryService {
 
-    private final Map<String, RecoveryToken> tokens = new HashMap<>();
+    private final Map<String, RecoveryToken> tokens = new ConcurrentHashMap<>();
 
     /**
      * Gera um token de recuperação para o e-mail informado.
@@ -33,6 +33,9 @@ public class PasswordRecoveryService {
      */
     public String getEmailFromToken(String token) {
 
+        if (token == null || token.isBlank()) {
+            return null;
+        }
         RecoveryToken recoveryToken = tokens.get(token);
 
         if (recoveryToken == null) {
@@ -40,11 +43,27 @@ public class PasswordRecoveryService {
         }
 
         // Verifica se o token expirou
-        if (LocalDateTime.now().isAfter(recoveryToken.expiration())) {
+        if (!LocalDateTime.now().isBefore(recoveryToken.expiration())) {
             tokens.remove(token);
             return null;
         }
 
+        return recoveryToken.email();
+    }
+
+    /**
+     * Valida e retira o token em uma única operação de remoção.
+     * Um token retirado não pode ser utilizado novamente.
+     */
+    public String consumeToken(String token) {
+        if (token == null || token.isBlank()) {
+            return null;
+        }
+        RecoveryToken recoveryToken = tokens.remove(token);
+        if (recoveryToken == null
+                || !LocalDateTime.now().isBefore(recoveryToken.expiration())) {
+            return null;
+        }
         return recoveryToken.email();
     }
 
