@@ -8,11 +8,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -29,7 +28,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/login/**").permitAll() // Permitir acesso a GET na URL de login
                         .requestMatchers(HttpMethod.POST, "/login/**").permitAll() // Permitir acesso a POST na URL de login
                         .requestMatchers(HttpMethod.GET, "/css/**").permitAll() // Permitir acesso a arquivos CSS
-                        .requestMatchers(HttpMethod.GET, "/images/**").permitAll() // Permitir acesso a arquivos de imagem
+                        .requestMatchers(HttpMethod.GET, "/js/**").permitAll() // Permitir acesso a arquivos JavaScript
+                        .requestMatchers(HttpMethod.GET, "/imgs/**").permitAll() // Permitir acesso a arquivos de imagem
                         .requestMatchers(HttpMethod.GET, "/register").permitAll() // Permitir acesso à página de registro
                         .requestMatchers(HttpMethod.POST, "/register").permitAll() // Permitir envio do formulário de registro
                         .requestMatchers(HttpMethod.GET, "/recoverpassword").permitAll() // Permitir acesso à página de recuperação de senha
@@ -53,9 +53,7 @@ public class SecurityConfig {
                                 response.sendRedirect("/home"); // Redireciona para /home
                             }
                         })
-                        .failureHandler((request, response, authentication) -> {
-                            response.sendRedirect("/error"); // Redireciona para /error em caso de falha
-                        })
+                        .failureUrl("/login?error=true") // Exibe a falha de autenticação na própria tela de login
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout") // Define a URL para logout
@@ -65,7 +63,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    public InMemoryUserDetailsManager userDetailsService() {
         UserDetails user = User.builder()
                 .username(userConfig.getUserUsername())
                 .password(passwordEncoder().encode(userConfig.getUserPassword())) // Codificar a senha
@@ -77,7 +75,7 @@ public class SecurityConfig {
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(user,admin);
+        return new InMemoryUserDetailsManager(user, admin);
     }
 
     @Bean

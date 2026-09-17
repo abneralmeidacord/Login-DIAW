@@ -1,17 +1,26 @@
 package com.example.Login_DIAW.controller;
 
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.example.Login_DIAW.service.SendEmailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class LoginDIAWController {
 
-    @Autowired
-    private SendEmailService sendEmailService;
+    private final InMemoryUserDetailsManager userDetailsManager;
+    private final PasswordEncoder passwordEncoder;
+
+    public LoginDIAWController(
+            InMemoryUserDetailsManager userDetailsManager,
+            PasswordEncoder passwordEncoder) {
+        this.userDetailsManager = userDetailsManager;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("/login")
     public String login() {
@@ -21,11 +30,6 @@ public class LoginDIAWController {
     @GetMapping("/home")
     public String home() {
         return "home";
-    }
-
-    @GetMapping("/error")
-    public String error() {
-        return "error";
     }
 
     @GetMapping("/admin")
@@ -42,18 +46,49 @@ public class LoginDIAWController {
     public String handleRegister(
             @RequestParam("nome") String nome,
             @RequestParam("email") String email,
-            @RequestParam("cpf") String cpf,
-            @RequestParam("rg") String rg,
-            @RequestParam("endereco") String endereco,
-            @RequestParam("instituicao") String instituicao,
-            @RequestParam("senha") String senha) {
+            @RequestParam("senha") String senha,
+            @RequestParam("confirmacaoSenha") String confirmacaoSenha,
+            RedirectAttributes redirectAttributes) {
 
-        // Aqui você pode adicionar lógica para salvar os dados do usuário, por exemplo:
-        // userService.saveUser(new User(nome, email, cpf, rg, endereco, instituicao, senha));
+        if (nome.isBlank() || email.isBlank() || senha.isBlank() || confirmacaoSenha.isBlank()) {
+            redirectAttributes.addFlashAttribute("registerError", "Preencha todos os campos obrigatórios.");
+            return "redirect:/register";
+        }
 
-        // Redirecionar ou exibir uma mensagem de sucesso
-        System.out.println("Registro: Redirecionado para a página de login.");
-        return "redirect:/login"; // Após o registro, redirecionar para a página de login
+        String normalizedEmail = email.trim().toLowerCase();
+
+        if (!normalizedEmail.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            redirectAttributes.addFlashAttribute("registerError", "Informe um email válido.");
+            return "redirect:/register";
+        }
+
+        if (senha.length() < 8) {
+            redirectAttributes.addFlashAttribute("registerError", "A senha deve possuir pelo menos 8 caracteres.");
+            return "redirect:/register";
+        }
+
+        if (!senha.equals(confirmacaoSenha)) {
+            redirectAttributes.addFlashAttribute("registerError", "As senhas informadas não coincidem.");
+            return "redirect:/register";
+        }
+
+        if (userDetailsManager.userExists(normalizedEmail)) {
+            redirectAttributes.addFlashAttribute("registerError", "Já existe uma conta cadastrada com este email.");
+            return "redirect:/register";
+        }
+
+        userDetailsManager.createUser(
+                User.withUsername(normalizedEmail)
+                        .password(passwordEncoder.encode(senha))
+                        .roles("USER")
+                        .build()
+        );
+
+        redirectAttributes.addFlashAttribute(
+                "registerSuccess",
+                "Cadastro realizado com sucesso! Agora você pode fazer login."
+        );
+        return "redirect:/login";
     }
 
     @GetMapping("/recoverpassword")
@@ -62,17 +97,18 @@ public class LoginDIAWController {
     }
 
     @PostMapping("/recoverpassword")
-public String handleRecoverPassword(
-        @RequestParam("email") String email) {
+    public String handleRecoverPassword(
+            @RequestParam("email") String email,
+            RedirectAttributes redirectAttributes) {
 
-    sendEmailService.sendEmail(
-            email,
-            "Recuperação de senha - Login DIAW",
-            "Recebemos uma solicitação de recuperação de senha para esta conta.\n\n" +
-            "Se você não fez essa solicitação, ignore este e-mail."
-    );
+        // Aqui você pode adicionar lógica para recuperar a senha.
+        // userService.recoverPassword(email);
 
-    return "redirect:/login";
-}
+        redirectAttributes.addFlashAttribute(
+                "recoverSuccess",
+                "Se o email estiver cadastrado, você receberá as instruções de recuperação."
+        );
+        return "redirect:/login";
+    }
 }
     

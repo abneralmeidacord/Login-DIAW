@@ -1,96 +1,122 @@
-* {
-    margin: 0;
-    padding: 0;
+:root {
+    --tea-green: #c3d7a2;
+    --bright-snow: #fafbfc;
+    --white-smoke: #f1f0ee;
+    --hunter-green: #2f5a45;
+    --ink-black: #050d0f;
+}
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
+html,
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    min-height: 100%;
+    margin: 0;
 }
 
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+body {
+    display: grid;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 32px;
+    place-items: center;
+    color: var(--ink-black);
+    background: linear-gradient(135deg, #64b98e 0%, var(--hunter-green) 100%);
+    font-family: "Poppins", system-ui, sans-serif;
 }
 
-h2 {
-    margin-bottom: 20px;
+.status-card {
+    width: min(100%, 620px);
+    padding: clamp(36px, 7vw, 72px);
     text-align: center;
-    color: #333;
+    background: var(--bright-snow);
+    border-radius: 26px;
+    box-shadow: 0 24px 70px rgb(5 13 15 / 24%);
 }
 
-.form-group {
-    margin-bottom: 15px;
+.status-icon {
+    display: grid;
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 24px;
+    place-items: center;
+    color: var(--hunter-green);
+    background: rgb(195 215 162 / 55%);
+    border-radius: 50%;
 }
 
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+.status-icon .material-symbols-rounded {
+    font-size: 44px;
 }
 
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+.status-icon-error {
+    color: #8f3030;
+    background: #f8dddd;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus {
-    border-color: #007bff;
-    outline: none;
+.eyebrow {
+    margin: 0 0 8px;
+    color: var(--hunter-green);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
 }
 
-.btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
+h1 {
+    margin: 0;
+    color: var(--hunter-green);
+    font-size: clamp(1.7rem, 5vw, 2.5rem);
+    font-weight: 500;
+    line-height: 1.25;
 }
 
-.btn:hover {
-    background-color: #0056b3;
+.status-message {
+    margin: 20px auto 32px;
+    color: #716f6b;
+    line-height: 1.7;
 }
 
-.home-container {
-    display: flex;
-    flex-direction: column;
+.status-button {
+    display: inline-flex;
+    min-height: 52px;
+    padding: 13px 28px;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    height: 100vh;
-}
-
-.home-message {
-    margin: 20px 0;
-    font-size: 18px;
-    color: #555;
-}
-
-.home-btn {
-    padding: 10px 20px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
+    color: var(--bright-snow);
+    background: var(--hunter-green);
+    border: 2px solid var(--hunter-green);
+    border-radius: 0;
+    font: 500 1rem "Poppins", system-ui, sans-serif;
+    text-decoration: none;
     cursor: pointer;
-    font-size: 16px;
+    transition: background-color 160ms ease, transform 160ms ease;
 }
 
-.home-btn:hover {
-    background-color: #218838;
+.status-button:hover {
+    background: #244936;
+}
+
+.status-button:active {
+    transform: translateY(1px);
+}
+
+.status-button:focus-visible {
+    outline: 3px solid var(--tea-green);
+    outline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+    body {
+        padding: 20px;
+    }
+
+    .status-card {
+        padding: 38px 24px;
+        border-radius: 20px;
+    }
 }
