@@ -24,6 +24,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))  // ADICIONE ESSA LINHA        
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/login/**").permitAll() // Permitir acesso a GET na URL de login
                         .requestMatchers(HttpMethod.POST, "/login/**").permitAll() // Permitir acesso a POST na URL de login
@@ -35,7 +36,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/recoverpassword").permitAll() // Permitir acesso à página de recuperação de senha
                         .requestMatchers(HttpMethod.GET, "/error").permitAll() // Permitir acesso à página de erro
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Proteger URLs que começam com /admin para apenas ADMIN
+                        .requestMatchers(HttpMethod.POST, "/api/email/**").permitAll()
                         .anyRequest().authenticated() // Proteger todas as outras URLs
+                        
                 )
                 .formLogin(form -> form
                         .loginPage("/login") // Especifica a URL da página de login

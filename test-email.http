@@ -1,0 +1,8 @@
+POST http://localhost:8080/api/email/send
+Content-Type: application/json
+
+{
+  "to": "gui.presot@gmail.com",
+  "subject": "Teste de Envio de Email",
+  "body": "Este é um teste de envio de e-mail usando Spring Boot."
+}
