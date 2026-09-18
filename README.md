@@ -33,6 +33,17 @@ src/main/resources/
 └── application.properties          # Configurações e credenciais da aplicação
 ```
 
+## 🖼️ Telas do sistema
+
+### Login
+![Tela de login](/src/main/resources/static/imgs/login.png)
+
+### Cadastro
+![Tela de cadastro](/src/main/resources/static/imgs/register.png)
+
+### Recuperar senha
+![Tela de recuperação de senha](/src/main/resources/static/imgs/recover-password.png)
+
 ## ▶️ Como executar
 
 ### Pré-requisitos
